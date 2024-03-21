@@ -1,39 +1,70 @@
-import { Text } from "@chakra-ui/react"
-import { useContext, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { AppContext } from "../components/AppContext"
-import { getAllLocalStorage } from "../services/storage"
+import {
+  Box,
+  Center,
+  Flex,
+  List,
+  ListItem,
+  Text,
+  UnorderedList,
+} from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../components/AppContext";
+import { api } from "../api";
 
-
-
-const ContaInfo = () => { 
-    const { isLoggedIn } = useContext(AppContext);
-    const navigate = useNavigate()
-    const  diobank = JSON.stringify(localStorage.getItem("diobank"));
-    console.log(diobank[12]);
-
-    useEffect(()=>{
-
-        if(diobank[12] === 'f'){
-            navigate("/");
-        }
-    })
-    
-    return (
-        <>
-            <Text fontSize='3xl' fontWeight='bold'>
-                Informações da conta
-            </Text>
-            <Link to='/conta/1'>
-                <Text fontSize='xl'>
-                    Conta
-                </Text>
-            </Link>
-            <a href='/conta/1'>
-                Link com tag a
-            </a>
-        </>
-    )
+interface UserData {
+  email: string;
+  password: string;
+  name: string;
+  balance: number;
+  id: string;
 }
 
-export default ContaInfo
+const ContaInfo = () => {
+  const dataUser = useContext(AppContext);
+  const [UserData, setUserData] = useState<UserData>();
+  const navigate = useNavigate();
+  const diobank = JSON.stringify(localStorage.getItem("diobank"));
+  //  console.log(diobank[12]);
+  //console.log(dataUser.isLoggedIn)
+
+  useEffect(() => {
+    const getData = async () => {
+      const data: any | UserData = await api;
+      setUserData(data);
+    };
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    //!dataUser.isLoggedIn && navigate('/')
+
+    if (diobank[12] === "f") {
+      navigate("/");
+    }
+  });
+
+  //console.log(UserData)
+
+  return (
+    <>
+      <Box margin={"1rem"} backgroundColor={"#fff"} borderRadius={"10px"}>
+        <Center display={"Flex"} flexDirection={"column"}>
+          <Text fontSize="3xl" fontWeight="bold">
+            Informações da conta
+          </Text>
+          <UnorderedList >
+            <ListItem>id: {UserData?.id}</ListItem>
+            <ListItem>Nome: {UserData?.name}</ListItem>
+            <ListItem>Email: {UserData?.email}</ListItem>
+            <ListItem>Balance: {UserData?.balance}</ListItem>
+          </UnorderedList>
+          <Link to="/conta/1">Conta</Link>
+        </Center>
+      </Box>
+    </>
+  );
+};
+
+export default ContaInfo;

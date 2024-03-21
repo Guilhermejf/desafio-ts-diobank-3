@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { api } from "../api";
 import CardInfo from "../components/CardInfo";
 import { AppContext } from "../components/AppContext";
+import ContaInfo from "./ContaInfo";
 
 interface UserData {
   email: string;
@@ -38,6 +39,7 @@ const Conta = () => {
   }
 
   const showProfile = () =>{
+    <ContaInfo/>
     navigate("/infoconta")
   }
 
